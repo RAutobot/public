@@ -13,12 +13,10 @@ jobs:
       contents: write
     steps:
       - name: Extract boot image
-        run: |
-          curl -sSL "${{ inputs.fastboot-rom-url }}" | tar -xz -f - --occurrence --wildcards "*/images/boot.img"
-          zip boot.zip */images/boot.img
+        run: curl -sSL "${{ inputs.fastboot-rom-url }}" | tar -xz -f - --occurrence --wildcards "*/images/boot.img"
 
       - name: Release
         uses: softprops/action-gh-release@v3
         with:
           tag_name: outputs
-          files: boot.zip
+          files: "*/images/boot.img"
