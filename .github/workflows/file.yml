@@ -1,4 +1,4 @@
-name: Check File
+name: File
 on:
   workflow_dispatch:
     inputs:
@@ -9,13 +9,13 @@ on:
         required: true
 
 jobs:
-  check-file:
+  file:
     runs-on: ubuntu-latest
     steps:
       - name: Download file
         run: printf "%s\n" "FILE=$(curl -sSLOJ -w "%{filename_effective}" -b "${{ inputs.cookies }}" "${{ inputs.file-url }}")" >> "$GITHUB_ENV"
 
-      - name: Check file
+      - name: File
         run: |
           if [[ "$FILE" == *.zip ]]; then
             unzip "$FILE"
