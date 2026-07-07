@@ -50,7 +50,6 @@ jobs:
         with:
           archive: false
           path: ${{ env.OUTPUT_FILE }}
-          overwrite: true
 
   merge-artifacts:
     needs: compress-videos
