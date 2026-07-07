@@ -19,10 +19,10 @@ jobs:
       - name: File
         run: |
           if [[ "$FILE" == *.zip ]]; then
-            unzip "$FILE"
+            unzip -q "$FILE"
             find . -type f -exec cksum -a sha256 {} +
           elif [[ "$FILE" == *.apk ]]; then
-            zip -d "$FILE" "lib/armeabi-v7a/*" "lib/x86/*" "lib/x86_64/*" && zip -d "$FILE" "META-INF/*"
+            zip -q -d "$FILE" "lib/armeabi-v7a/*" "lib/x86/*" "lib/x86_64/*" && zip -d "$FILE" "META-INF/*"
           fi
 
       - name: Upload artifact
