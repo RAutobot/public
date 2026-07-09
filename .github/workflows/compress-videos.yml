@@ -10,8 +10,9 @@ on:
         required: true
       video-scale:
         description: Video scale
-        type: choice
+        default: "144"
         options: [1080, 720, 480, 360, 240, 144]
+        type: choice
 
 jobs:
   compress-videos:
