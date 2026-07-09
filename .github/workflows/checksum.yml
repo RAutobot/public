@@ -14,10 +14,10 @@ jobs:
     steps:
       - name: Checksum
         run: |
-          file="$(curl -sSLOJ -w "%{filename_effective}" -b "${{ inputs.cookies }}" "${{ inputs.file-url }}")"
+          filename="$(curl -sSLOJ -w "%{filename_effective}" -b "${{ inputs.cookies }}" "${{ inputs.file-url }}")"
 
-          if [[ "$file" == *.zip ]]; then
-            unzip -q "$file"
+          if [[ "$filename" == *.zip ]]; then
+            unzip -q "$filename"
           fi
 
           find . -type f -exec cksum -a sha256 {} +
