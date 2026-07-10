@@ -27,8 +27,7 @@ jobs:
 
       - name: Download video
         run: |
-          printf "%s" "${{ inputs.headers }}" > headers.txt
-          filename="$(curl -sSLOJ -w "%{filename_effective}" -H @headers.txt "${{ matrix.video-url }}")"
+          filename="$(curl -sSLOJ -w "%{filename_effective}" ${{ inputs.headers }} "${{ matrix.video-url }}")"
           printf "%s\n" "INPUT_FILENAME=$filename" "OUTPUT_FILENAME=${filename%.*}.mkv" >> "$GITHUB_ENV"
 
       - name: Compress video
