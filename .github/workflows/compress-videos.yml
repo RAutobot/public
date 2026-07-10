@@ -7,6 +7,7 @@ on:
         description: Cookies
       video-urls:
         description: JSON array of video URL
+        default: '["URL_HERE"]'
         required: true
       video-scale:
         description: Video scale
