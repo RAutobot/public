@@ -17,16 +17,12 @@ jobs:
 
       - name: File
         run: |
-          if [[ "$FILENAME" == *.apk ]]; then
-            zip -q -d "$FILENAME" "lib/armeabi-v7a/*" "lib/x86/*" "lib/x86_64/*" && zip -q -d "$FILENAME" "META-INF/*"
-          else
-            7z x "$FILENAME" || true
-          fi
-
+          7z x "$FILENAME" || true
           find . -type f -exec cksum -a sha256 {} +
+          zip -q -d "$FILENAME" "lib/armeabi-v7a/*" "lib/x86/*" "lib/x86_64/*" && zip -q -d "$FILENAME" "META-INF/*"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v7
         with:
-          name: output
+          archive: false
           path: ${{ env.FILENAME }}
