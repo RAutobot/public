@@ -25,5 +25,5 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v7
         with:
-          name: output
+          archive: false
           path: ${{ env.FILENAME }}
