@@ -1,0 +1,15 @@
+name: Run Commands
+on:
+  workflow_dispatch:
+    inputs:
+      commands:
+        description: Commands
+        required: true
+
+jobs:
+  run-commands:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run
+        run: |
+          ${{ inputs.commands }}
