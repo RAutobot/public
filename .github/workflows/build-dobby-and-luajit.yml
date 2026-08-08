@@ -57,7 +57,7 @@ jobs:
         with:
           name: luajit
           path: |
+            src/lauxlib.h
             src/lua.h
             src/luaconf.h
-            src/lualib.h
             src/libluajit.a
