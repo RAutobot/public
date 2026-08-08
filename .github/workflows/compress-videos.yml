@@ -1,0 +1,56 @@
+name: Compress Videos
+run-name: Compress Videos (${{ inputs.video-scale }})
+on:
+  workflow_dispatch:
+    inputs:
+      cookies:
+        description: Cookies
+      video-urls:
+        description: Video URLs
+        required: true
+      video-scale:
+        description: Video scale
+        options: [1080, 720, 480, 360, 240, 144]
+        type: choice
+
+jobs:
+  compress-videos:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        video-url: ${{ fromJson(inputs.video-urls) }}
+      fail-fast: false
+    steps:
+      - name: Download FFmpeg
+        run: curl -L "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz" | tar -xJ -f - --occurrence --wildcards "*/bin/ffmpeg"
+
+      - name: Download video
+        run: |
+          filename="$(curl -OJ -w "%{filename_effective}" -b "${{ inputs.cookies }}" "${{ matrix.video-url }}")"
+          printf "%s\n" "INPUT_FILENAME=$filename" "OUTPUT_FILENAME=${filename%.*}.mkv" >> "$GITHUB_ENV"
+
+      - name: Compress video
+        run: |
+          ./*/bin/ffmpeg \
+            -i "$INPUT_FILENAME" \
+            -c:v libx265 \
+            -crf 30 \
+            -pix_fmt yuv420p10le \
+            -vf "scale='if(gt(iw, ih), -2, min(iw, ${{ inputs.video-scale }}))':'if(gt(iw, ih), min(ih, ${{ inputs.video-scale }}), -2)'" \
+            ${{ inputs.video-scale == '144' && '-an' || '-c:a libopus' }} \
+            "$OUTPUT_FILENAME"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          archive: false
+          path: ${{ env.OUTPUT_FILENAME }}
+
+  merge-artifacts:
+    needs: compress-videos
+    runs-on: ubuntu-latest
+    steps:
+      - name: Merge artifacts
+        uses: actions/upload-artifact/merge@v7
+        with:
+          name: "!${{ github.run_number }}"

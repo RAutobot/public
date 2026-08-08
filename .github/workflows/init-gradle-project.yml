@@ -1,0 +1,48 @@
+name: Init Gradle Project
+on:
+  workflow_dispatch:
+    inputs:
+      package-name:
+        description: Package name
+        default: com.example
+      project-name:
+        description: Project name
+        default: example-project
+      project-type:
+        description: Project type
+        type: choice
+        options: [basic, java-application java-library, kotlin-application, kotlin-library ]
+
+jobs:
+  init-gradle-project:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Java
+        uses: actions/setup-java@v5
+        with:
+          java-version: 25
+          distribution: temurin
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          gradle-version: current
+          cache-disabled: true
+
+      - name: Init Gradle project
+        run: |
+          gradle init \
+            --no-comments \
+            --no-split-project \
+            --package "${{ inputs.package-name }}" \
+            --project-name "${{ inputs.project-name }}" \
+            --type "${{ inputs.project-type }}" \
+            --dsl kotlin \
+            --java-version 25
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: output
+          path: .
+          include-hidden-files: true

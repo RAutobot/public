@@ -1,0 +1,27 @@
+name: Checksum
+on:
+  workflow_dispatch:
+    inputs:
+      cookies:
+        description: Cookies
+      file-url:
+        description: File URL
+        required: true
+
+jobs:
+  checksum:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download file
+        run: printf "%s\n" "FILENAME=$(curl -LOJ -w "%{filename_effective}" -b "${{ inputs.cookies }}" "${{ inputs.file-url }}")" >> "$GITHUB_ENV"
+
+      - name: Checksum
+        run: |
+          unzip "$FILENAME" || true
+          find . -type f -exec cksum -a sha256 {} +
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: output
+          path: ${{ env.FILENAME }}

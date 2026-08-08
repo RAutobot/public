@@ -1,0 +1,63 @@
+name: Build Dobby and LuaJIT
+on: workflow_dispatch
+
+jobs:
+  build-dobby:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          repository: jmpews/Dobby
+          ref: 0932d69c320e786672361ab53825ba8f4245e9d3
+
+      - name: Set up NDK
+        id: set-up-ndk
+        uses: nttld/setup-ndk@v1
+        with:
+          ndk-version: r25
+
+      - name: Build
+        run: python3 scripts/platform_builder.py --platform android --arch armeabi-v7a --android_ndk_dir "${{ steps.set-up-ndk.outputs.ndk-path }}"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: dobby
+          path: |
+            build/android/armeabi-v7a/libdobby.a
+            include/dobby.h
+
+  build-luajit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          repository: LuaJIT/LuaJIT
+
+      - name: Set up NDK
+        id: set-up-ndk
+        uses: nttld/setup-ndk@v1
+        with:
+          ndk-version: r25
+
+      - name: Set up gcc-multilib
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends gcc-multilib
+
+      - name: Build
+        run: |
+          ndk_bin="${{ steps.set-up-ndk.outputs.ndk-path }}/toolchains/llvm/prebuilt/linux-x86_64/bin"
+          make amalg HOST_CC="gcc -m32" CC="$ndk_bin/armv7a-linux-androideabi19-clang" TARGET_AR="$ndk_bin/llvm-ar rcus" TARGET_STRIP="$ndk_bin/llvm-strip"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: luajit
+          path: |
+            src/lua.h
+            src/luaconf.h
+            src/lualib.h
+            src/libluajit.a
