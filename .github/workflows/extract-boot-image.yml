@@ -13,13 +13,12 @@ jobs:
       - name: Run
         run: |
           curl -sSL "${{ inputs.fastboot-rom-url }}" | tar -xz -f - --occurrence --wildcards "*/images/boot.img"
-          cksum -a sha256 */images/boot.img
 
-      - name: Archive
-        run: 7z a -m0=lzma2 -mx=9 archive.7z .
+          cksum -a sha256 */images/boot.img
+          7z a -m0=lzma2 -mx=9 boot-image.7z .
 
       - name: Upload
         uses: actions/upload-artifact@v7
         with:
           archive: false
-          path: archive.7z
+          path: boot-image.7z
