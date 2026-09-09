@@ -25,9 +25,7 @@ jobs:
           fi
 
           cksum -a sha256 "$filename"
-
-      - name: Archive
-        run: 7z a -m0=lzma2 -mx=9 file.7z .
+          7z a -m0=lzma2 -mx=9 file.7z .
 
       - name: Upload
         uses: actions/upload-artifact@v7
