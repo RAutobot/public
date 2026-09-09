@@ -49,7 +49,7 @@ jobs:
           archive: false
           path: ${{ env.OUTPUT_FILENAME }}
 
-  merge:
+  merge-artifacts:
     needs: compress-videos
     if: always()
     runs-on: ubuntu-latest
