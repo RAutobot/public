@@ -1,0 +1,17 @@
+name: Test
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: URL
+        required: true
+      cookies:
+        description: Cookies
+  
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run
+        run: |
+          7z l "$(curl -sSLOJ -w %{filename_effective} -b "${{ inputs.cookies }}" "${{ inputs.url }}")"
