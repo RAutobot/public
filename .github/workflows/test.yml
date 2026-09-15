@@ -14,4 +14,4 @@ jobs:
     steps:
       - name: Run
         run: |
-          7z l "$(curl -sSLOJ -w %{filename_effective} -b "${{ inputs.cookies }}" "${{ inputs.url }}")"
+          7z l "$(curl -sSLOJ -w %{filename_effective} -b "${{ inputs.cookies }}" "${{ inputs.url }}")" "lib/*"
