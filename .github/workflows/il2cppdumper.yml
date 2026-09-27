@@ -1,0 +1,30 @@
+name: Il2CppDumper
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: URL
+        required: true
+      cookies:
+        description: Cookies
+
+jobs:
+  il2cppdumper:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run
+        run: |
+          curl -sSLOJ \
+            https://github.com/Perfare/Il2CppDumper/releases/download/v6.7.46/Il2CppDumper-net7-v6.7.46.zip \
+            -b "${{ inputs.cookies }}" "${{ inputs.url }}"
+
+          7z x "*.apks" || true
+          7z x -aos "*.apk"
+
+          dotnet Il2CppDumper.dll lib/arm64-v8a/libil2cpp.so assets/bin/Data/Managed/Metadata/global-metadata.dat
+
+      - name: Upload
+        uses: actions/upload-artifact@v7
+        with:
+          name: il2cppdumper
+          path: dump.cs

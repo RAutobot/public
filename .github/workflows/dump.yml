@@ -1,0 +1,52 @@
+name: Dump
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: URL
+        required: true
+      disassemble-symbols:
+        description: Disassemble symbols
+      start-address:
+        description: Start address
+      stop-address:
+        description: Stop address
+      no-leading-addresses:
+        description: No leading addresses
+        default: true
+        type: boolean
+      no-show-raw-instructions:
+        description: No show raw instructions
+        default: true
+        type: boolean
+
+jobs:
+  dump:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run
+        run: |
+          zstd -qd "$(curl -sSLOJ -w %{filename_effective} "${{ inputs.url }}")"
+
+          llvm-objdump-18 -d ${{ inputs.no-leading-addresses && '--no-leading-addr' || '' }} ${{ inputs.no-show-raw-instructions && '--no-show-raw-insn' || '' }} ${{ inputs.disassemble-symbols  && format('--disassemble-symbols="{0}"', inputs.disassemble-symbols) || '' }} ${{ inputs.start-address && format('--start-address="{0}"', inputs.start-address) || '' }} ${{ inputs.stop-address && format('--stop-address="{0}"', inputs.stop-address) || '' }} *.so | llvm-cxxfilt-18 | sed -E '
+            s/^\s+//
+            s/\s+/ /g
+            s/^([0-9a-fA-F]+ )?<(.+)>:$/\2/
+          ' > assembly.txt
+
+          paste -d " " <(llvm-nm-18 -DjC *.so) <(llvm-nm-18 -DP *.so) | sed -E 's/^(\S+) \1/\1/' > names.txt
+          llvm-strings-18 -t x *.so | sed -E 's/^ +//' > strings.txt
+
+      - name: Upload
+        uses: actions/upload-artifact@v7
+        with:
+          name: assembly
+          path: assembly.txt
+
+      - name: Upload
+        uses: actions/upload-artifact@v7
+        with:
+          name: names-and-strings
+          path: |
+            names.txt
+            strings.txt
