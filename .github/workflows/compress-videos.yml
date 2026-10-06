@@ -27,9 +27,9 @@ jobs:
     steps:
       - name: Download FFmpeg and video
         run: |
-          curl -sSLf https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz | tar -xJ -f -
+          curl -fsSL https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz | tar -xJ -f -
 
-          filename="$(curl -sSLOJf -w %{filename_effective} -b "${{ inputs.cookies }}" "${{ matrix.url }}")"
+          filename="$(curl -fsSLOJ -w %{filename_effective} -b "${{ inputs.cookies }}" "${{ matrix.url }}")"
           printf "%s\n" "INPUT_FILENAME=$filename" "OUTPUT_FILENAME=${filename%.*}.mkv" >> "$GITHUB_ENV"
 
       - name: Compress
