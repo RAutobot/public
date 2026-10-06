@@ -20,16 +20,16 @@ on:
 
 jobs:
   compress-videos:
-    runs-on: ubuntu-latest
     strategy:
       matrix:
         url: ${{ fromJson(inputs.urls) }}
+    runs-on: ubuntu-latest
     steps:
       - name: Download FFmpeg and video
         run: |
-          curl -sSL https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz | tar -xJ -f -
+          curl -sSLf https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz | tar -xJ -f -
 
-          filename="$(curl -sSLOJ -w %{filename_effective} -b "${{ inputs.cookies }}" "${{ matrix.url }}")"
+          filename="$(curl -sSLOJf -w %{filename_effective} -b "${{ inputs.cookies }}" "${{ matrix.url }}")"
           printf "%s\n" "INPUT_FILENAME=$filename" "OUTPUT_FILENAME=${filename%.*}.mkv" >> "$GITHUB_ENV"
 
       - name: Compress
