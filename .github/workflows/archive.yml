@@ -15,7 +15,7 @@ jobs:
       - name: Download
         run: printf "%s\n" "FILENAME=$(curl -fsSLOJ -w %{filename_effective} -b "${{ inputs.cookies }}" "${{ inputs.url }}")" >> "$GITHUB_ENV"
 
-      - name: Download and run
+      - name: Archive
         run: |
           cksum -a sha256 "$FILENAME"
           7z a -m0=lzma2 -mx=9 "$FILENAME.7z" "$FILENAME"
