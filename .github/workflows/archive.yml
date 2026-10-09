@@ -18,7 +18,7 @@ jobs:
       - name: Download and run
         run: |
           cksum -a sha256 "$FILENAME"
-          7z a -m0=lzma2 -mx=9 "$FILENAME.7z "$filename"
+          7z a -m0=lzma2 -mx=9 "$FILENAME.7z" "$FILENAME"
 
       - name: Upload
         uses: actions/upload-artifact@v7
