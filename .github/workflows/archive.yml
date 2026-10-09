@@ -1,0 +1,25 @@
+name: Archive
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: URL
+        required: true
+      cookies:
+        description: Cookies
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download and run
+        run: |
+          filename="$(curl -fsSLOJ -w %{filename_effective} -b "${{ inputs.cookies }}" "${{ inputs.url }}")"
+          cksum -a sha256 "$filename"
+          7z a -m0=lzma2 -mx=9 archive.7z "$filename"
+
+      - name: Upload
+        uses: actions/upload-artifact@v7
+        with:
+          archive: false
+          path: archive.7z
