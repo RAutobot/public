@@ -39,13 +39,13 @@ jobs:
             -pix_fmt yuv420p10le \
             -vf "scale='if(gt(iw, ih), -2, min(iw, ${{ inputs.max-resolution }}))':'if(gt(iw, ih), min(ih, ${{ inputs.max-resolution }}), -2)'" \
             ${{ inputs.with-audio && '-c:a libopus' || '-an' }} \
-            "$FILENAME.mkv"
+            "${FILENAME%.*}.mkv"
 
       - name: Upload
         uses: actions/upload-artifact@v7
         with:
           archive: false
-          path: ${{ env.FILENAME }}.mkv
+          path: "*.mkv"
 
   merge-artifacts:
     needs: compress-videos
