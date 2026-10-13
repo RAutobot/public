@@ -1,5 +1,5 @@
 name: Compress Videos
-run-name: Compress Videos (${{ inputs.max-resolution }}p, ${{ inputs.with-audio && 'Audio' || 'No Audio' }})
+run-name: Compress Videos (${{ inputs.max-resolution }}p, ${{ inputs.audio && 'Audio' || 'No Audio' }})
 on:
   workflow_dispatch:
     inputs:
@@ -13,8 +13,8 @@ on:
         default: "144"
         options: [1080, 720, 480, 360, 240, 144]
         type: choice
-      with-audio:
-        description: With audio
+      audio:
+        description: Audio
         type: boolean
 
 jobs:
@@ -38,7 +38,7 @@ jobs:
             -crf 30 \
             -pix_fmt yuv420p10le \
             -vf "scale='if(gt(iw, ih), -2, min(iw, ${{ inputs.max-resolution }}))':'if(gt(iw, ih), min(ih, ${{ inputs.max-resolution }}), -2)'" \
-            ${{ inputs.with-audio && '-c:a libopus' || '-an' }} \
+            ${{ inputs.audio && '-c:a libopus' || '-an' }} \
             "${FILENAME%.*}.mkv"
 
       - name: Upload
@@ -57,10 +57,10 @@ jobs:
         with:
           merge-multiple: true
 
-      - run: 7z a -m0=lzma2 -mx=9 !videos.7z .
+      - run: 7z a -m0=lzma2 -mx=9 artifacts.7z .
 
       - name: Upload
         uses: actions/upload-artifact@v7
         with:
           archive: false
-          path: \!videos.7z
+          path: artifacts.7z
