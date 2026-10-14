@@ -5,6 +5,7 @@ on:
     inputs:
       urls:
         description: URLs
+        default: "[]"
         required: true
       cookies:
         description: Cookies
