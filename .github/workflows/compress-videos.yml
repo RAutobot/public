@@ -5,7 +5,6 @@ on:
     inputs:
       urls:
         description: URLs
-        default: "[URLS_HERE]"
         required: true
       cookies:
         description: Cookies
