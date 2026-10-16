@@ -16,7 +16,7 @@ jobs:
         run: printf "%s\n" "FILENAME=$(curl -fsSLOJ -w %{filename_effective} -b "${{ inputs.cookies }}" "${{ inputs.url }}")" >> "$GITHUB_ENV"
 
       - name: Optimize
-        run: zip -qd "$FILENAME" "lib/armeabi-v7a/*" "lib/x86/*" "lib/x86_64/*" && zip -qd "$FILENAME" "META-INF/*"
+        run: zip -qd "$FILENAME" "lib/armeabi-v7a/*" "lib/x86/*" "lib/x86_64/*"
 
       - run: 7z a -m0=lzma2 -mx=9 "$FILENAME.7z" "$FILENAME"
       - name: Upload
