@@ -1,5 +1,5 @@
 name: Compress Videos
-run-name: Compress Videos (${{ inputs.max-resolution }}p, ${{ inputs.audio && 'Audio' || 'No Audio' }})
+run-name: Compress Videos (${{ inputs.max-resolution }}p, ${{ inputs.include-audio && 'with Audio' || 'without Audio' }})
 on:
   workflow_dispatch:
     inputs:
@@ -13,8 +13,8 @@ on:
         default: "144"
         options: [1080, 720, 480, 360, 240, 144]
         type: choice
-      audio:
-        description: Audio
+      include-audio:
+        description: Include audio
         type: boolean
 
 jobs:
@@ -38,14 +38,14 @@ jobs:
             -crf 30 \
             -pix_fmt yuv420p10le \
             -vf "scale='if(gt(iw, ih), -2, min(iw, ${{ inputs.max-resolution }}))':'if(gt(iw, ih), min(ih, ${{ inputs.max-resolution }}), -2)'" \
-            ${{ inputs.audio && '-c:a libopus' || '-an' }} \
+            ${{ inputs.include-audio && '-c:a libopus' || '-an' }} \
             "$OUTPUT_FILENAME"
 
       - name: Upload
         uses: actions/upload-artifact@v7
         with:
           archive: false
-          path: ${{ env.OUTPUT_FILENAME }}.mkv
+          path: ${{ env.OUTPUT_FILENAME }}
 
   merge-artifacts:
     needs: compress-videos
