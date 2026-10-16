@@ -1,5 +1,5 @@
 name: Compress Videos
-run-name: Compress Videos (${{ inputs.max-resolution }}p, ${{ inputs.include-audio && 'with Audio' || 'without Audio' }})
+run-name: Compress Videos (${{ inputs.max-resolution }}p${{ inputs.include-audio && ' Audio' || '' }})
 on:
   workflow_dispatch:
     inputs:
