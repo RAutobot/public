@@ -58,7 +58,6 @@ jobs:
           merge-multiple: true
 
       - run: 7z a -m0=lzma2 -mx=9 artifacts.7z .
-
       - name: Upload
         uses: actions/upload-artifact@v7
         with:
