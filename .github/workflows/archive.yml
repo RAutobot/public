@@ -12,15 +12,13 @@ jobs:
   archive:
     runs-on: ubuntu-latest
     steps:
-      - name: Download
-        run: printf "%s\n" "FILENAME=$(curl -fsSLOJ -w %{filename_effective} -b "${{ inputs.cookies }}" "${{ inputs.url }}")" >> "$GITHUB_ENV"
-
       - name: Archive
         run: |
-          7z a -m0=lzma2 -mx=9 "$FILENAME.7z" .
+          curl -fsSLOJ -w %{filename_effective} -b "${{ inputs.cookies }}" "${{ inputs.url }}"
+          7z a -m0=lzma2 -mx=9 archive.7z .
 
       - name: Upload
         uses: actions/upload-artifact@v7
         with:
           archive: false
-          path: ${{ env.FILENAME }}.7z
+          path: archive.7z
