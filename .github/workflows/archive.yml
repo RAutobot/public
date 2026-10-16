@@ -17,8 +17,7 @@ jobs:
 
       - name: Archive
         run: |
-          cksum -a sha256 "$FILENAME"
-          7z a -m0=lzma2 -mx=9 "$FILENAME.7z" "$FILENAME"
+          7z a -m0=lzma2 -mx=9 "$FILENAME.7z" .
 
       - name: Upload
         uses: actions/upload-artifact@v7
